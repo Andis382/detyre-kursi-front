@@ -114,7 +114,7 @@ export default {
         this.$store.dispatch("setAuthenticated", true);
         this.$store.dispatch("setUserDetails", data.user);
       
-        this.$router.push("/user-profile");
+        this.$router.push("/rooms");
       } catch (e) {
         this.error = e.response.data.message ?? "Invalid credentials";
       } finally {

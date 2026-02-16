@@ -1,13 +1,18 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Login from "@/components/Login.vue";
-import UserProfile from "@/components/UserProfile.vue";
 import Register from "@/components/Register.vue";
+import AppLayout from "@/components/AppLayout.vue";
+import RoomSearch from "@/components/RoomSearch.vue";
+import MyReservations from "@/components/MyReservations.vue";
+import MyInvoices from "@/components/MyInvoices.vue";
+import AdminPanel from "@/components/AdminPanel.vue";
+import UserProfile from "@/components/UserProfile.vue";
 import { ApiClient, API_GET_USER_ENDPOINT } from "@/service/app.service";
 
 const routes = [
   {
     path: "/",
-    redirect: "/login",
+    redirect: "/rooms",
   },
   {
     path: "/login",
@@ -20,10 +25,37 @@ const routes = [
     component: Register,
   },
   {
-    path: "/user-profile",
-    name: "UserProfile",
-    component: UserProfile,
+    path: "/",
+    component: AppLayout,
     meta: { requiresAuth: true },
+    children: [
+      {
+        path: "rooms",
+        name: "RoomSearch",
+        component: RoomSearch,
+      },
+      {
+        path: "reservations",
+        name: "MyReservations",
+        component: MyReservations,
+      },
+      {
+        path: "invoices",
+        name: "MyInvoices",
+        component: MyInvoices,
+      },
+      {
+        path: "admin",
+        name: "AdminPanel",
+        component: AdminPanel,
+        meta: { requiresAdmin: true },
+      },
+      {
+        path: "user-profile",
+        name: "UserProfile",
+        component: UserProfile,
+      },
+    ],
   },
 ];
 
@@ -38,16 +70,16 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.meta.requiresAuth && !isAuthenticated) {
     return next('/login');
-  } 
-  
+  }
+
   if ((to.name === 'Login' || to.name === 'Register') && isAuthenticated) {
-    return next('/user-profile');
+    return next('/rooms');
   }
 
   if (to.meta.requiresAuth && isAuthenticated) {
     try {
       await ApiClient.get(API_GET_USER_ENDPOINT);
-      next(); 
+      next();
     } catch (error) {
       sessionStorage.clear();
       next('/login?expired=true');

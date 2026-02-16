@@ -1,24 +1,11 @@
 <template>
-  <div class="profile-page-container">
-    <Toolbar class="custom-toolbar">
-      <template #start>
-        <div class="toolbar-brand">UPT Profile</div>
-        <Button v-if="isAdmin" label="All Users" icon="pi pi-users" text @click="openUsersManagement()" :class="{ 'active-tab': activeTab === 'admin' }" />
-        <Button label="My Profile"  text @click="activeTab = 'profile'" :class="{ 'active-tab': activeTab === 'profile' }" />
-      </template>
+  <div>
+    <div class="profile-tabs">
+      <Button v-if="isAdmin" label="Menaxho Përdoruesit" icon="pi pi-users" text @click="openUsersManagement()" :class="{ 'active-profile-tab': activeTab === 'admin' }" />
+      <Button label="Profili Im" icon="pi pi-user" text @click="activeTab = 'profile'" :class="{ 'active-profile-tab': activeTab === 'profile' }" />
+      <Button icon="pi pi-user-edit" label="Ndrysho Profilin" severity="secondary" text @click="editProfile" />
+    </div>
 
-      <template #end>
-        <div class="user-info-mini">
-          <span>Welcome, <b>{{ user?.first_name }}</b></span>
-          <Avatar :image="user?.profile_photo ? getProfileImageUrl(user?.profile_photo) : null" :icon="user?.profile_photo ? null : 'pi pi-user'" shape="circle"/>
-          <Button icon="pi pi-user-edit" label="Edit Profile" severity="secondary" text @click="editProfile" />
-          <Button icon="pi pi-sign-out" label="Logout" severity="danger" text @click="logout" />
-        </div>
-      </template>
-    </Toolbar>
-
-    <div class="main-content">
-      
       <div v-if="activeTab === 'profile'" class="profile-card-container">
         <Card class="profile-card">
           <template #header>
@@ -158,7 +145,6 @@
               </div>
           </template>
       </Dialog>
-    </div>
   </div>
 </template>
 
@@ -167,7 +153,6 @@ import { ApiClient, BASE_URL, API_UPDATE_USER_ENDPOINT, API_GET_ALL_USERS_ENDPOI
 import InputText from 'primevue/inputtext';
 import InputMask from 'primevue/inputmask';
 import DatePicker from 'primevue/datepicker'; 
-import Toolbar from 'primevue/toolbar';
 import Button from 'primevue/button';
 import Avatar from 'primevue/avatar';
 import Card from 'primevue/card';
@@ -180,7 +165,7 @@ import Toast from 'primevue/toast';
 
 export default {
   name: "UserProfile",
-  components: { Toolbar, Button, Avatar, Card, Tag, DataTable, Column, Toast, ConfirmDialog, Dialog, InputText, InputMask, DatePicker },
+  components: { Button, Avatar, Card, Tag, DataTable, Column, Toast, ConfirmDialog, Dialog, InputText, InputMask, DatePicker },
   data() {
     return {
       BASE_URL,
@@ -221,10 +206,6 @@ export default {
       } finally {
         this.fetchingUsers = false;
       }
-    },
-    logout() {
-      this.$store.dispatch("logout");
-      this.$router.push("/login");
     },
     formatDate(dateString) {
       if (!dateString) return "";
@@ -366,35 +347,15 @@ export default {
   object-fit: cover;
 }
 
-.profile-page-container {
-  min-height: 100vh;
-  background-color: #f4f1ea;
-}
-
-.custom-toolbar {
-  background: #080808 !important;
-  border: none;
-  border-radius: 0;
-  color: white;
-  padding: 0.5rem 2rem;
-}
-
-.toolbar-brand {
-  font-weight: bold;
-  font-size: 1.2rem;
-  margin-right: 2rem;
-}
-
-.user-info-mini {
+.profile-tabs {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
-.main-content {
-  padding: 2rem;
-  max-width: 1000px;
-  margin: 0 auto;
+.active-profile-tab {
+  background: rgba(8, 8, 8, 0.08) !important;
+  border-bottom: 2px solid #080808 !important;
 }
 
 .profile-card-container {
@@ -455,12 +416,6 @@ export default {
   margin: 0;
   font-weight: 600;
   color: #080808;
-}
-
-.active-tab {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-bottom: 2px solid #eee3ce !important;
-  color: #eee3ce !important;
 }
 
 .tab-title {
