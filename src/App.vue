@@ -10,7 +10,15 @@ export default {
 
 
 <style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: auto !important;
+    overflow-y: auto !important;
+  }
+
   #app {
-    height: 100%;
+    min-height: 100vh;
+    overflow-y: auto;
   }
 </style>
